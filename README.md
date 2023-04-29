@@ -1,4 +1,4 @@
-# stale
+# Stale
 
 You need to setup the next lines in the scale.js: SCALE_URL and SCALE_API
 
