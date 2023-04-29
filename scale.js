@@ -85,12 +85,11 @@ async function main() {
             const created = Math.floor(Date.now() / 1000);
 
             let result = ""
-            console.log("Starting to fetch...")
+            console.log("Starting fetch...")
             try {
                 result = await fetchData(JSON.stringify(messages));
-                console.log("scale response:\n\n", result)
-                console.log("preparing to send")
-                // rest of your code
+                console.log("Fetched. Scale response:\n\n", result)
+                console.log("Preparing to send completion")
              } catch (error) {
                 result = error
              }             
@@ -107,7 +106,7 @@ async function main() {
                     finish_reason: 'stop',
                     index: 0,
                 }]
-            }, (key, value) => (typeof value === "string") ? value.replace(/\\\\/g, "\\") : value));
+            }, (key, value) => (typeof value === "string") ? value.replace(/\\\\/g, "\\") : value)); // unescaping slashes
             res.end();
         } else {
             res.setHeader('Content-Type', 'application/json');
