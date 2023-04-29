@@ -122,7 +122,7 @@ async function main() {
     });
 
     server.listen(5003, '0.0.0.0', () => {
-        console.log(`proxy for scale: 'http://127.0.0.1:5003/scale'`);
+        console.log(`proxy for scale: 'http://127.0.0.1:5003/'`);
     });
 }
 
