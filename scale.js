@@ -1,7 +1,7 @@
 const https = require('https');
 const http = require('http');
 
-//Scale deployment url: https://dashboard.scale.com/spellbook/api/v2/deploy/abcdefg
+//Scale deployment url: https://dashboard.scale.com/spellbook/api/v2/deploy/9lytrlq
 const SCALE_URL=""
 // API Key
 const SCALE_API=""
@@ -13,14 +13,17 @@ async function fetchData(messages) {
         input: messages,
       },
     });
+    console.log(data)
+    console.log(data.length)
+    console.log(Buffer.byteLength(data))
     const url = new URL(SCALE_URL);
     const options = {
       hostname: url.hostname,
       path: url.pathname,
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': data.length,
+        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Length': Buffer.byteLength(data),
         Authorization: `Basic ${SCALE_API}`,
       },
     };
@@ -37,12 +40,14 @@ async function fetchData(messages) {
           resolve(parsedData.output);
         } catch (error) {
           // If parsing fails, reject with an error
+          console.log(responseData)
           if(responseData=="error code: 1020") reject(responseData + "\n(Cloudflare: Access denied. Maybe you need to turn on VPN or something)");
           reject(responseData)
         }
       });
     });
     req.on('error', (error) => {
+      console.log(error)
       reject(error);
     });
     req.write(data);
@@ -74,13 +79,11 @@ async function main() {
     const server = http.createServer(async (req, res) => {
         if (req.method.toUpperCase() === 'POST') {
             const body = await readBody(req, true);
-            const modelName = "Claude";
-
             const {
                 messages,
             } = body;
             res.setHeader('Content-Type', 'application/json');
-
+            console.log("got body\n",messages)
             const id = `chatcmpl-${(Math.random().toString(36).slice(2))}`;
             const created = Math.floor(Date.now() / 1000);
 
@@ -97,7 +100,7 @@ async function main() {
             res.write(JSON.stringify({
                 id, created,
                 object: 'chat.completion',
-                model: modelName,
+                model: "GPT-4 filtered",
                 choices: [{
                     message: {
                         role: 'assistant',
