@@ -13,9 +13,6 @@ async function fetchData(messages) {
         input: messages,
       },
     });
-    console.log(data)
-    console.log(data.length)
-    console.log(Buffer.byteLength(data))
     const url = new URL(SCALE_URL);
     const options = {
       hostname: url.hostname,
