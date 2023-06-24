@@ -1,3 +1,4 @@
+const https = require('https');
 const http = require('http');
 const axios = require('axios');
 
@@ -10,12 +11,11 @@ const JSON_stringify_fixed = (obj) => JSON.stringify(obj).replace(
   /[\u007f-\uffff]/g,
   (c) => '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4),
 );
-//Код Массетера с клодоскрипта ^ 
 
 async function fetchData(messages) {
   const data = {
     input: {
-      input: JSON_stringify_fixed(messages)
+      input: JSON_stringify_fixed(messages).replace(/\\n/g, '\n').replace(/\\\n/g, '\n').replace(/\\\\"/g, '"').replace(/\\\"/g, '"')
     }
   }
   const headers = { 
@@ -61,7 +61,7 @@ async function main() {
             try {
                 result = await fetchData(JSON.stringify(messages));
                 console.log("Fetched. Scale response:\n\n", result)
-                console.log("\n\n",result.replace(/\\n/g, '\n').replace(/\\"/g, '"').trim())
+                console.log("\n\n\n\n",result.replace(/\\n/g, '\n').replace(/\\\\"/g, '"').replace(/\\\"/g, '"'))
              } catch (error) {
                 result = error
              }             
@@ -72,7 +72,7 @@ async function main() {
                 choices: [{
                     message: {
                         role: 'assistant',
-                        content: result.replace?.(/\\n/g, '\n').replace(/\\"/g, '"')
+                        content: result.replace?.(/\\n/g, ' \n').replace(/\\"/g, '"')
                     },
                     finish_reason: 'stop',
                     index: 0,
@@ -84,7 +84,7 @@ async function main() {
             res.write(JSON.stringify({
                 object: 'list',
                 data: [
-                    { id: 'GPT-4', object: 'model', created: Date.now(), owned_by: 'OpenAI', permission: [], root: 'GPT-4 filtered', parent: null },
+                    { id: 'GPT-4', object: 'model', created: Date.now(), owned_by: 'OpenAI', permission: [], root: 'GPT-4', parent: null },
                 ]
             }));
         }
